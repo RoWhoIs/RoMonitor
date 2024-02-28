@@ -1,0 +1,39 @@
+name: RoMonitor
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Lint with flake8
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Prepare config.json
+      run: |
+        echo '{"roblosecurity": "${{ secrets.ROSEC }}", "webhook": "${{ secrets.WEBHK }}", "debug": true}' > config.json
+    - name: Run romonitor.py with test args
+      run: |
+        python romonitor.py -i 20573078 -t 10 -m 2000 &&
+        python romonitor.py -i 1822592 -t 20 -m 25 -M ${{ secrets.UID }} &&
+        python romonitor.py -ri 15156416901 -t 30 -m 50
