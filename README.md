@@ -3,6 +3,7 @@
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/RoWhoIs/RoMonitor?style=for-the-badge&cacheSeconds=1">
 <img alt="GitHub forks" src="https://img.shields.io/github/forks/RoWhoIs/RoMonitor?style=for-the-badge&cacheSeconds=1">
 <img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/RoWhoIs/RoMonitor?style=for-the-badge&cacheSeconds=1">
+<img alt="Build Status" src="https://img.shields.io/github/actions/workflow/status/RoWhoIs/RoMonitor/python-app.yml?style=for-the-badge&cacheSeconds=0">
 </p>
 
 An advanced Roblox item monitoring application to alert you on item updates, from the people who made the RoWhoIs bot.
