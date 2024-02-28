@@ -68,7 +68,7 @@ async def rofetch(url: str, method: str = "get", expectedresponse: int = 200, de
                 elif response.status in [400, 404]: return 404, None
                 elif response.status == 403: await token_renewal() # Renew just in case
                 await asyncio.sleep(5)
-            return resp.status, None
+            return response.status, None
     except aiohttp.client_exceptions.ClientConnectorError: await logs.fatal("Can't connect to the Roblox servers! Are you offline?")
 
 async def fetch_resale(item: int) -> Optional[int]:
@@ -151,6 +151,7 @@ async def initialize(item: int) -> bool:
         return False
     thumbnail = thumbnail[1]['data'][0]['imageUrl'] if thumbnail[0] == 200 else "https://www.robloxians.com/resources/not-available.png" if thumbnail[0] == 403 else "https://www.robloxians.com/resources/not-available.png"
     await handle_data(data[1])
+    await send_webhook(f"RoMonitor is now monitoring `{monitoredItem.name}` by `{monitoredItem.creator}`.", title=f"{monitoredItem.name}", url=f"https://www.roblox.com/catalog/{item}/")
     await logs.info(f"Now monitoring [\033[94m{monitoredItem.name}\033[0m] by [\033[94m{monitoredItem.creator}\033[0m]")
     return True
 
@@ -212,5 +213,8 @@ if itemValid:
         loop.add_signal_handler(signal.SIGINT, lambda: asyncio.create_task(shutdown(loop)))
     except KeyboardInterrupt: pass
     except asyncio.CancelledError: pass
+    except Exception as e:
+        print("Unexpected fatal error occured:", e)
+        exit(1)
     asyncio.new_event_loop().run_until_complete(logs.info("Exiting RoMonitor. Have a nice day!"))
-    exit(1)
+    exit(0)
