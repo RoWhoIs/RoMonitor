@@ -36,4 +36,4 @@ jobs:
       run: |
         python romonitor.py -i 20573078 -t 10 -m 2000 &&
         python romonitor.py -i 1822592 -t 20 -m 25 -M ${{ secrets.UID }} &&
-        python romonitor.py -ri 15156416901 -t 30 -m 50
+        python romonitor.py -i 15156416901 -t 30 -m 50
