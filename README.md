@@ -18,7 +18,11 @@ An advanced Roblox item monitoring application to alert you on item updates, fro
 git clone https://github.com/RoWhoIs/RoMonitor --depth=1 && cd RoMonitor
 ```
 3. Modify `config.json` to include your webhook key and roblosecurity.
-4. Run romonitor.py
+4. Install the dependencies
+```bash
+pip3 install -r requirements.txt
+```
+5. Run romonitor.py
 ```bash
 python3 romonitor.py -ri 130213380 -t 30 -m 72000
 ```
