@@ -25,13 +25,13 @@ pip3 install -r requirements.txt
 ```
 5. Run romonitor.py
 ```bash
-python3 romonitor.py -ri 130213380 -t 30 -m 72000
+python3 romonitor.py -ri 130213380 -t 30 -m 75000
 ```
 <sub>Example command. This will run forever, check the item every 30 seconds, and send an alert if the item is below 75,000 Robux. </sub>
 
 ## Usage
 
-| Operand         | Description                                      | Required? | Default |
+| Flag            | Description                                      | Required? | Default |
 |:----------------|:-------------------------------------------------|:----------|:--------|
 | -i/--item       | Chooses what item to monitor                     | Yes       | None    |
 | -M/--mention    | Choose who the bot will mention                  | No        | None    |
