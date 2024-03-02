@@ -144,13 +144,13 @@ async def initialize() -> bool:
     thumbnail = thumbnail[1]['data'][0]['imageUrl'] if thumbnail[0] == 200 else "https://www.robloxians.com/resources/not-available.png" if thumbnail[0] == 403 else "https://www.robloxians.com/resources/not-available.png"
     await handle_data(data[1])
     await send_webhook(f"RoMonitor is now monitoring `{monitoredItem.name}` by `{monitoredItem.creator}`.", title=f"{monitoredItem.name}", url=f"https://www.roblox.com/catalog/{item}/")
-    await logs.info(f"Now monitoring [\033[94m{monitoredItem.name}\033[0m] by [\033[94m{monitoredItem.creator}\033[0m]")
+    await logs.info(f"Initialized! Now monitoring [\033[94m{monitoredItem.name}\033[0m] by [\033[94m{monitoredItem.creator}\033[0m]")
     return True
 
 async def monitor(minprice: int = 0, time: int = 60, runforever: bool = False) -> None:
     """Monitors the given item for the specified changes"""
     typeAlias = {"islimited": "limited status", "forsale": "onsale", "name": "name", "price": "price", "description": "description", "remaining": "quantity", "updated": "last modified", "iscollectible": "Collectible Status"}
-    if monitoredItem.price <= minprice != 0 and not runforever: # Prevent needless checking
+    if monitoredItem.price is not None and monitoredItem.price <= minprice != 0 and not runforever: # Prevent needless checking
         await asyncio.gather(send_webhook(f"{monitoredItem.name}'s price is now `{monitoredItem.price}` Robux!", title=f"{monitoredItem.name}", url=f"https://www.roblox.com/catalog/{item}"), logs.info(f"Item [\033[94m{monitoredItem.name}\033[0m] reached minimum price threshold before fully initialized."))
         return
     while True:
@@ -158,9 +158,8 @@ async def monitor(minprice: int = 0, time: int = 60, runforever: bool = False) -
             result = await handle_data((await rofetch(f"https://economy.roblox.com/v2/assets/{item}/details", debugmessage="Fetching latest item data"))[1])
             if result is not None:
                 for typeOf in result:
-                    if typeOf in ['price', 'forsale'] and monitoredItem.price is not None and (oldItem.price is None or minprice >= monitoredItem.price != oldItem.price): await send_webhook(f"`{monitoredItem.name}` is now `{str(monitoredItem.price) + '` Robux' if monitoredItem.price != "Free`" else monitoredItem.price}!\n**Old Price:** `{oldItem.price}`\n{('**Difference:** `' + str(abs(monitoredItem.price - oldItem.price)) + '`' if [None, str] not in [monitoredItem.price, oldItem.price] else '')}`", title=f"{monitoredItem.name}", url=f"https://www.roblox.com/catalog/{item}")
+                    if typeOf in ['price', 'forsale'] and monitoredItem.price is not None and monitoredItem.price <= minprice != 0: await send_webhook(f"`{monitoredItem.name}` is now `{str(monitoredItem.price) + '` Robux' if monitoredItem.price != 'Free' else monitoredItem.price}!\n**Old Price:** `{oldItem.price}`\n{('**Difference:** `' + str(abs(monitoredItem.price - oldItem.price)) + '`' if all(isinstance(price, (int, float)) for price in [monitoredItem.price, oldItem.price]) else '')}`", title=f"{monitoredItem.name}", url=f"https://www.roblox.com/catalog/{item}")
                     elif typeOf not in ['updated', 'price', 'forsale'] and len(result) > 1 or len(result) == 1 and typeOf not in ['price', 'forsale']: await send_webhook(f"`{monitoredItem.name}`'s {typeAlias[typeOf].lower()} changed!\n\n**Current {typeAlias[typeOf].capitalize()}:** `{getattr(monitoredItem, typeOf)}`\n**Old {typeAlias[typeOf].capitalize()}:** `{getattr(oldItem, typeOf)}`", title=f"{monitoredItem.name}", url=f"https://www.roblox.com/catalog/{item}")
-                    # TODO: Validate price/forsale check if item goes offsale -> onsale does not fail
                     await logs.info(f"Item [\033[94m{monitoredItem.name}\033[0m] has been modified! Attribute changed: {typeAlias[typeOf].capitalize()} | New {typeAlias[typeOf].capitalize()}: {getattr(monitoredItem, typeOf)} | Old {typeAlias[typeOf].capitalize()}: {getattr(oldItem, typeOf)}")
                 if not runforever: break
             await asyncio.sleep(time)
