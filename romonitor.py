@@ -114,7 +114,7 @@ async def handle_data(data: dict) -> Optional[dict[str, str]]:
 async def send_webhook(message: str, title: Optional[str] = None, url: Optional[str] = None) -> None:
     """Sends a message through the webhook"""
     if debugMode: await logs.debug("Pushing to webhook")
-    webhookContents = {"username": "RoMonitor", "avatar_url": "https://robloxians.com/resources/builderman.png", "content": f"<@{mention}>" if mention != 0 else None, "embeds": [{"title": title if title is not None else None, "url": url if url is not None else None, "color": 65293, "description": message, "thumbnail": {"url": thumbnail}}]}
+    webhookContents = {"username": "RoMonitor", "avatar_url": "https://rowhois.com/builderman.png", "content": f"<@{mention}>" if mention != 0 else None, "embeds": [{"title": title if title is not None else None, "url": url if url is not None else None, "color": 65293, "description": message, "thumbnail": {"url": thumbnail}}]}
     async with aiohttp.ClientSession() as session: await session.request("POST", webhookURL, json=webhookContents)
 
 async def initialize() -> bool:
@@ -141,7 +141,7 @@ async def initialize() -> bool:
         else: await logs.fatal(f"Failed to initialize. Item '{item}' seems to be invalid.")
         if debugMode: await logs.debug(f"Got code {data[0]} during initialization")
         return False
-    thumbnail = thumbnail[1]['data'][0]['imageUrl'] if thumbnail[0] == 200 else "https://www.robloxians.com/resources/not-available.png" if thumbnail[0] == 403 else "https://www.robloxians.com/resources/not-available.png"
+    thumbnail = thumbnail[1]['data'][0]['imageUrl'] if thumbnail[0] == 200 else "https://www.rowhois.com/not-available.png" if thumbnail[0] == 403 else "https://www.rowhois.com/not-available.png"
     await handle_data(data[1])
     await send_webhook(f"RoMonitor is now monitoring `{monitoredItem.name}` by `{monitoredItem.creator}`.", title=f"{monitoredItem.name}", url=f"https://www.roblox.com/catalog/{item}/")
     await logs.info(f"Initialized! Now monitoring [\033[94m{monitoredItem.name}\033[0m] by [\033[94m{monitoredItem.creator}\033[0m]")
